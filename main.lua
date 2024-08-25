@@ -6,11 +6,12 @@ local level = require("src.level")
 local inventory = require("src.inventory")
 local item = require("src.item")
 local svgGenerator = require("src.svgGenerator")
-
+local level = require("src.level")
 local flashlightRadius = 200
 local camera = {x = 0, y = 0}
 local backgroundMusic
-
+local speedboostDraw = svgGenerator.speedboost()
+item.init(keyDraw, medkitDraw, speedboostDraw)
 function love.load()
     love.graphics.setDefaultFilter("nearest", "nearest")
     
@@ -22,7 +23,8 @@ function love.load()
     local medkitDraw = svgGenerator.medkit()
     local wallDraw = svgGenerator.wall()
     local floorDraw = svgGenerator.floor()
-    
+        level.init()
+        level.loadLevel(1)  -- Load the first level
     gameState.init()
     player.init(playerDraw)
     girl.init(girlDraw)
@@ -83,15 +85,16 @@ function love.draw()
     
     love.graphics.pop()
     
-    -- Draw UI elements
-    love.graphics.setColor(1, 1, 1)
-    love.graphics.print("Health: " .. player.health, 10, 10)
-    love.graphics.print("Sanity: " .. math.floor(player.sanity), 10, 30)
-    love.graphics.print("Keys: " .. inventory.keyCount, 10, 50)
-    love.graphics.print("Use arrow keys to move", 10, 70)
-    
-    inventory.draw()
-    gameState.draw()
+   -- Draw UI elements
+   love.graphics.setColor(1, 1, 1)
+   love.graphics.print("Health: " .. player.health, 10, 10)
+   love.graphics.print("Sanity: " .. math.floor(player.sanity), 10, 30)
+   love.graphics.print("Keys: " .. inventory.keyCount, 10, 50)
+   love.graphics.print("Use arrow keys to move", 10, 70)
+   love.graphics.print("Blue: Player, Pink: Girl (restores sanity), Green: Zombie (damages you)", 10, 90)
+   
+   inventory.draw()
+   gameState.draw()
 end
 
 function love.keypressed(key)

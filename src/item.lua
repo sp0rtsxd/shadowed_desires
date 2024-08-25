@@ -1,6 +1,7 @@
 local item = {}
 local inventory = require("src.inventory")
 local collectSound
+local keyCollectEffect = {timer = 0, duration = 0.5}
 
 function item.init(keyDrawFunc, medkitDrawFunc)
     item.keyDrawFunc = keyDrawFunc
@@ -19,10 +20,14 @@ function item.update(dt)
     if collectedItem then
         inventory.addItem(collectedItem)
         collectSound:play()
-        if collectedItem == "medkit" then
+        if collectedItem == "key" then
+            keyCollectEffect.timer = keyCollectEffect.duration
+        elseif collectedItem == "medkit" then
             player.health = math.min(100, player.health + 50)
         end
     end
+    
+    keyCollectEffect.timer = math.max(0, keyCollectEffect.timer - dt)
 end
 
 function item.draw()
@@ -32,13 +37,19 @@ function item.draw()
         local y = (itemObj.y - 1) * level.tileSize
         love.graphics.push()
         love.graphics.translate(x, y)
-        love.graphics.scale(2, 2)  -- Scale up the item sprites
+        love.graphics.scale(2, 2)
         if itemObj.type == "key" and item.keyDrawFunc then
             item.keyDrawFunc()
         elseif itemObj.type == "medkit" and item.medkitDrawFunc then
             item.medkitDrawFunc()
         end
         love.graphics.pop()
+    end
+    
+    -- Draw key collect effect
+    if keyCollectEffect.timer > 0 then
+        love.graphics.setColor(1, 1, 0, keyCollectEffect.timer / keyCollectEffect.duration)
+        love.graphics.circle("fill", love.graphics.getWidth()/2, love.graphics.getHeight()/2, 50)
     end
 end
 

@@ -1,5 +1,9 @@
 local svgGenerator = {}
 
+local function drawRect(x, y, width, height)
+    love.graphics.rectangle("fill", x, y, width, height)
+end
+
 function svgGenerator.player()
     return function()
         love.graphics.setColor(0.29, 0.56, 0.89)  -- Light blue
@@ -41,27 +45,36 @@ function svgGenerator.key()
     return function()
         love.graphics.setColor(1, 0.84, 0)  -- Gold
         love.graphics.circle("fill", 8, 8, 6)
-        love.graphics.rectangle("fill", 14, 6, 14, 4)
-        love.graphics.rectangle("fill", 22, 6, 4, 8)
+        drawRect(14, 6, 14, 4)
+        drawRect(22, 6, 4, 8)
     end
 end
 
 function svgGenerator.medkit()
     return function()
         love.graphics.setColor(1, 1, 1)  -- White
-        love.graphics.rectangle("fill", 2, 6, 28, 20)
+        drawRect(2, 6, 28, 20)
         love.graphics.setColor(1, 0, 0)  -- Red
         love.graphics.rectangle("line", 2, 6, 28, 20)
-        love.graphics.rectangle("fill", 14, 2, 4, 8)
-        love.graphics.rectangle("fill", 8, 14, 16, 4)
-        love.graphics.rectangle("fill", 14, 8, 4, 16)
+        drawRect(14, 2, 4, 8)
+        drawRect(8, 14, 16, 4)
+        drawRect(14, 8, 4, 16)
+    end
+end
+
+function svgGenerator.speedboost()
+    return function()
+        love.graphics.setColor(0, 1, 1)  -- Cyan
+        love.graphics.circle("fill", 16, 16, 14)
+        love.graphics.setColor(0, 0, 1)  -- Blue
+        love.graphics.polygon("fill", 8, 16, 24, 8, 24, 24)
     end
 end
 
 function svgGenerator.wall()
     return function()
         love.graphics.setColor(0.55, 0.27, 0.07)  -- Brown
-        love.graphics.rectangle("fill", 0, 0, 32, 32)
+        drawRect(0, 0, 32, 32)
         love.graphics.setColor(0.42, 0.24, 0.15)  -- Darker brown
         love.graphics.line(0, 8, 32, 8)
         love.graphics.line(0, 24, 32, 24)
@@ -73,7 +86,7 @@ end
 function svgGenerator.floor()
     return function()
         love.graphics.setColor(0.87, 0.72, 0.53)  -- Light brown
-        love.graphics.rectangle("fill", 0, 0, 32, 32)
+        drawRect(0, 0, 32, 32)
         love.graphics.setColor(0.76, 0.60, 0.42)  -- Darker brown
         love.graphics.line(0, 8, 32, 8)
         love.graphics.line(0, 24, 32, 24)

@@ -12,6 +12,8 @@ function player.init(drawFunc)
     player.health = 100
     player.sanity = 100
     player.drawFunc = drawFunc
+    player.speedBoost = 1
+    player.speedBoostTimer = 0
     
     footstepSound = love.audio.newSource("assets/sounds/footstep.wav", "static")
     heartbeatSound = love.audio.newSource("assets/sounds/heartbeat.wav", "static")
@@ -29,8 +31,8 @@ function player.update(dt)
         local length = math.sqrt(dx * dx + dy * dy)
         dx, dy = dx / length, dy / length
         
-        local newX = player.x + dx * player.speed * dt
-        local newY = player.y + dy * player.speed * dt
+        local newX = player.x + dx * player.speed * player.speedBoost * dt
+        local newY = player.y + dy * player.speed * player.speedBoost * dt
         
         if not level.getCollision(newX, player.y) then
             player.x = newX
@@ -53,6 +55,14 @@ function player.update(dt)
     elseif player.sanity >= 30 and heartbeatSound:isPlaying() then
         heartbeatSound:stop()
     end
+    
+    -- Update speed boost
+    if player.speedBoostTimer > 0 then
+        player.speedBoostTimer = player.speedBoostTimer - dt
+        if player.speedBoostTimer <= 0 then
+            player.speedBoost = 1
+        end
+    end
 end
 
 function player.draw()
@@ -61,6 +71,12 @@ function player.draw()
     love.graphics.scale(2, 2)  -- Scale up the player sprite
     player.drawFunc()
     love.graphics.pop()
+    
+    -- Add warning for low health or sanity
+    if player.health < 30 or player.sanity < 30 then
+        love.graphics.setColor(1, 0, 0)
+        love.graphics.print("WARNING: Low health or sanity!", love.graphics.getWidth()/2 - 100, 10)
+    end
 end
 
 function player.takeDamage(amount)
@@ -72,6 +88,11 @@ end
 
 function player.restoreSanity(amount)
     player.sanity = math.min(100, player.sanity + amount)
+end
+
+function player.activateSpeedBoost(duration)
+    player.speedBoost = 2
+    player.speedBoostTimer = duration
 end
 
 return player

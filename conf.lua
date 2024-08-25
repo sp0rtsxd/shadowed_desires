@@ -5,4 +5,8 @@ function love.conf(t)
     t.window.height = 600
     t.window.resizable = false
     t.console = true
+    
+    t.modules.audio = true
+    t.modules.sound = true
+    t.modules.music = true
 end
